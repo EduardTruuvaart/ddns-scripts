@@ -17,17 +17,18 @@ AWS_PROFILE="$3"
 PUBLIC_IP=$(host myip.opendns.com resolver1.opendns.com | grep "myip.opendns.com has" | awk '{print $4}')
 
 # Fetch route53 public IP address
-ROUTE53_PUBLIC_IP=$(aws route53 list-resource-record-sets \
+ROUTE53_PUBLIC_IP=$(/usr/local/bin/aws route53 list-resource-record-sets \
   --hosted-zone-id $HOSTED_ZONE_ID \
   --query "ResourceRecordSets[?Name=='$DOMAIN_NAME.'].ResourceRecords[0].Value" \
   --output text \
   --profile $AWS_PROFILE)
 
 if [ "$PUBLIC_IP" = "$ROUTE53_PUBLIC_IP" ]; then
-  echo "Public IP has not changed. No update needed."
+  current_datetime=$(date '+%Y-%m-%d %H:%M:%S')
+  echo "$current_datetime Public IP has not changed. No update needed."
 else
     # Update the Route 53 A record
-    aws route53 change-resource-record-sets \
+    /usr/local/bin/aws route53 change-resource-record-sets \
     --hosted-zone-id $HOSTED_ZONE_ID \
     --change-batch '{
         "Changes": [
@@ -48,5 +49,6 @@ else
     }' \
     --profile $AWS_PROFILE
 
-    echo "A record updated. Old IP $ROUTE53_PUBLIC_IP was changed to $PUBLIC_IP"
+    current_datetime=$(date '+%Y-%m-%d %H:%M:%S')
+    echo "$current_datetime A record updated. Old IP $ROUTE53_PUBLIC_IP was changed to $PUBLIC_IP"
 fi
