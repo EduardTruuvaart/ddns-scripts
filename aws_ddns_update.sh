@@ -16,26 +16,37 @@ AWS_PROFILE="$3"
 # Fetch the public IP address
 PUBLIC_IP=$(host myip.opendns.com resolver1.opendns.com | grep "myip.opendns.com has" | awk '{print $4}')
 
-# Update the Route 53 A record
-aws route53 change-resource-record-sets \
+# Fetch route53 public IP address
+ROUTE53_PUBLIC_IP=$(aws route53 list-resource-record-sets \
   --hosted-zone-id $HOSTED_ZONE_ID \
-  --change-batch '{
-    "Changes": [
-      {
-        "Action": "UPSERT",
-        "ResourceRecordSet": {
-          "Name": "'"$DOMAIN_NAME"'",
-          "Type": "A",
-          "TTL": 300,
-          "ResourceRecords": [
-            {
-              "Value": "'"$PUBLIC_IP"'"
-            }
-          ]
-        }
-      }
-    ]
-  }' \
-  --profile $AWS_PROFILE
+  --query "ResourceRecordSets[?Name=='$DOMAIN_NAME.'].ResourceRecords[0].Value" \
+  --output text \
+  --profile $AWS_PROFILE)
 
-echo "A record updated with public IP: $PUBLIC_IP"
+if [ "$PUBLIC_IP" == "$ROUTE53_PUBLIC_IP" ]; then
+  echo "Public IP has not changed. No update needed."
+else
+    # Update the Route 53 A record
+    aws route53 change-resource-record-sets \
+    --hosted-zone-id $HOSTED_ZONE_ID \
+    --change-batch '{
+        "Changes": [
+        {
+            "Action": "UPSERT",
+            "ResourceRecordSet": {
+            "Name": "'"$DOMAIN_NAME"'",
+            "Type": "A",
+            "TTL": 300,
+            "ResourceRecords": [
+                {
+                "Value": "'"$PUBLIC_IP"'"
+                }
+            ]
+            }
+        }
+        ]
+    }' \
+    --profile $AWS_PROFILE
+
+    echo "A record updated. Old IP $ROUTE53_PUBLIC_IP was changed to $PUBLIC_IP"
+fi
