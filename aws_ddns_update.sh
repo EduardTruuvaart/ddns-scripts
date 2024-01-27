@@ -23,7 +23,7 @@ ROUTE53_PUBLIC_IP=$(aws route53 list-resource-record-sets \
   --output text \
   --profile $AWS_PROFILE)
 
-if [ "$PUBLIC_IP" == "$ROUTE53_PUBLIC_IP" ]; then
+if [ "$PUBLIC_IP" = "$ROUTE53_PUBLIC_IP" ]; then
   echo "Public IP has not changed. No update needed."
 else
     # Update the Route 53 A record
