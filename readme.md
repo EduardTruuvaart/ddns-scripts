@@ -1,4 +1,10 @@
-Bash script that implement Dynamic DNS service on top of AWS Route53.
+## What is Dynamic DNS?
+In a typical scenario, when you connect to the internet through an Internet Service Provider (ISP), you are assigned an IP address. However, in some cases, this IP address may change periodically, especially for users with dynamic IP addresses. This can cause a problem if you're trying to access a device or service on your network from the internet, such as a web server or a camera, because the IP address might change, and you would need to know the new address each time.
+
+Dynamic DNS is solving a problem for individuals or small businesses that don't have a static IP address provided by their ISP and need a way to maintain a consistent way of accessing their network resources from the internet.
+
+## Contents
+This repo contains a script that will update AWS Route53 record with your current public IP address. It will also create a log file that will contain the output of the script. The script will only update the record if the IP address has changed.
 
 ## Usage
 In this example I am using UDM Pro to run the script, but it should work on any Unix based system.
