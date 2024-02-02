@@ -11,8 +11,12 @@ In this example I am using UDM Pro to run the script, but it should work on any 
 
 ### Setup
 1. Enable SSH on your UDM Pro
-2. Install AWS CLI by following this [guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
-3. Create AWS user that will have `route53:ChangeResourceRecordSets` and `route53:ListResourceRecordSets` permissions. You can use the following policy:
+2. Download AWS CLI as described in a following [guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+3. Install AWS CLI to selected location by running the following command:
+```
+/root/aws/install -i /root/awscli/ -b /root/awscli/bin
+```
+4. Create AWS user that will have `route53:ChangeResourceRecordSets` and `route53:ListResourceRecordSets` permissions. You can use the following policy:
 ```
 {
     "Version": "2012-10-17",
@@ -31,14 +35,14 @@ In this example I am using UDM Pro to run the script, but it should work on any 
     ]
 }
 ```
-4. Create AWS profile that will use user with permissions above by running the following command:
+5. Create AWS profile that will use user with permissions above by running the following command:
 ```
 aws configure --profile <aws_profile>
 ```
-5. SSH into your UDM Pro and create folder /root/ddns
-6. Copy the scripts from this repo to /root/ddns by running the following commands:
+6. SSH into your UDM Pro and create folder /root/ddns
+7. Copy the scripts from this repo to /root/ddns by running the following commands:
 ```
-7. scp ./aws_ddns_update.sh root@<Your IP here>:/root/ddns/
+scp ./aws_ddns_update.sh root@<Your IP here>:/root/ddns/
 ```
 8. Go into /root/ddns/ folder and add execute permissions to the script by running the following command:
 ```
