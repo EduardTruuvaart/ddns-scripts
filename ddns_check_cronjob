@@ -1,2 +1,2 @@
-*/20 * * * * /root/ddns/aws_ddns_update.sh <hosted_zone_id> <domain_name> <aws_profile> >>/root/ddns/ddns.log 2>&1
-0 2 * * * rm /root/ddns/ddns.log
+*/20 * * * * root /root/ddns/aws_ddns_update.sh <hosted_zone_id> <domain_name> <aws_profile> >>/root/ddns/ddns.log 2>&1
+0 2 * * * root rm /root/ddns/ddns.log
